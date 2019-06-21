@@ -204,27 +204,5 @@ textarea::-webkit-input-placeholder {
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
-/*# sourceMappingURL=init.css.map */
-
-
-@font-face {
-  font-family: 'iconfont';  /* project id 86139 */
-  src: url('//at.alicdn.com/t/font_l2qd42w10glanhfr.eot');
-  src: url('//at.alicdn.com/t/font_l2qd42w10glanhfr.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_l2qd42w10glanhfr.woff') format('woff'),
-  url('//at.alicdn.com/t/font_l2qd42w10glanhfr.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_l2qd42w10glanhfr.svg#iconfont') format('svg');
-}
-
-.icon {
-  font-family:"iconfont" !important;
-  font-size:16px;
-  font-style:normal;
-  -webkit-font-smoothing: antialiased;
-  -webkit-text-stroke-width: 0.2px;
-  -moz-osx-font-smoothing: grayscale;
-}
-.icon-arrowdown:before { content: "\e603"; }
-.icon-succeed:before { content: "\e619"; }
 
 </style>

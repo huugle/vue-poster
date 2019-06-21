@@ -27,7 +27,7 @@
           <img :src="modelSrc" v-show="modelSrc" style="display: block;max-width: 100%;">
            <!--  <img :src="`./img/bg/tips2.png`" style="width: 100%;" alt=""> -->
       </div>
-       <div id="dialog" class="dialog js-is-active" v-if="alertData.show">{{alertData.msg}}</div>
+       <div id="dialog" class="dialog js-is-active" v-if="hintData.show">{{hintData.msg}}</div>
     
      <div class="edit-box" :class='{"show":editShow}'>
                     <div class="edit-mod">
@@ -57,11 +57,22 @@
 </template>
 <script>
 import { VueCropper } from "vue-cropper"
+const BGCOUNT = 12;
+let generateNumberArray =  function(num){
+            let result  = []
+            for(let i =0;i<=num;i++){
+                result.push(i)
+            }
+            return result;
+        }
+const BGLIST = generateNumberArray(BGCOUNT)
+
+
 export default {
     name: 'hello',
     data() {
         return {
-            alertData: {
+            hintData: {
                 show: false,
                 msg: '',
                 skin: 'default',
@@ -72,12 +83,14 @@ export default {
             showtips:true,
             showtip:false,
             previews: {},
+            pw:800,
+            ph:1422,
             w:336,
             h:600,
-            random:Math.floor(Math.random()*12+1),
+            random:Math.floor(Math.random()*BGCOUNT+1),
             model: false,
             modelSrc: "",
-            bgList:[1,2,3,4,5,6,7,8,9,10,11,12],
+            bgList:BGLIST,
             option: {
                 img: "",
                 size: 1,
@@ -116,37 +129,34 @@ export default {
          _this.resize()
     },
     computed: {
-        openid() {
-            return store.fmtUrl().openid || ''
-        },
         bgurl(){
-            var random =this.random;
+            let random =this.random;
             return `./img/bg/${random}.png`
         }
 
     },
     methods: {
         resize(){
-            var fw = document.body.clientWidth;
-            var fh = document.body.clientHeight-100;
-            var rh = fw/800*1422;
+            let fw = document.body.clientWidth;
+            let fh = document.body.clientHeight-100;
+            let rh = fw/this.pw*this.ph;
 
             //根据宽高比来定义div大小
             this.h = Math.min(fh,rh);
-            this.w = this.h*800/1422; 
+            this.w = this.h*this.pw/this.ph; 
         },
         selectSnap(index){
             this.random=index;
             this.editShow=false;
         },
-        showMsg(msg) {
-            var alert = this.alertData;
-            alert.msg = msg;
-            alert.show = true;
-            alert.timeout = null;
-            alert.timeout = setTimeout(function() {
-                alert.show = false;
-                alert.timeout = null;
+        hint(msg) {
+            let hint = this.hintData;
+            hint.msg = msg;
+            hint.show = true;
+            hint.timeout = null;
+            hint.timeout = setTimeout(function() {
+                hint.show = false;
+                hint.timeout = null;
             }, 3000);
         },
         hideTips(){
@@ -166,7 +176,7 @@ export default {
             // this.option.img
             var file = e.target.files[0];
             if (!/\.(gif|jpg|jpeg|png|bmp|GIF|JPG|PNG)$/.test(e.target.value)) {
-                alert("图片类型必须是.gif,jpeg,jpg,png,bmp中的一种");
+                this.hint("图片类型必须是.gif,jpeg,jpg,png,bmp中的一种");
                 return false;
             }
             var reader = new FileReader();
@@ -195,7 +205,7 @@ export default {
         },
         finish(type) {
             if(!this.option.img){
-                return this.showMsg('请选择照片')
+                return this.hint('请选择照片')
             }
             // 输出
             this.$refs.cropper.getCropBlob(data => {
@@ -203,8 +213,8 @@ export default {
                 var img = window.URL.createObjectURL(data);
                 var c = document.createElement("canvas");
                 var ctx = c.getContext("2d");
-                c.width = 800;
-                c.height = 1422;
+                c.width = this.pw;
+                c.height = this.ph;
                 ctx.rect(0, 0, c.width, c.height);
                 var img = new Image();
                 img.src = window.URL.createObjectURL(data);
@@ -213,7 +223,6 @@ export default {
                     var img2 = new Image();
                     img2.src = _this.bgurl;
                     img2.onload = function() {
-                        console.log("绘制背景");
                         ctx.drawImage(img2, 0, 0, c.width, c.height);
                         _this.modelSrc = c.toDataURL("image/png", 0.8);
                     };
